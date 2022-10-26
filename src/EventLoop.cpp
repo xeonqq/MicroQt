@@ -23,13 +23,13 @@ void EventLoop::update() {
 void EventLoop::processEvents() {
   while (m_events.size()) {
     auto event = m_events.at(0);
-    m_events.removeAt(0);
+    ATOMIC() { m_events.removeAt(0); }
     event();
   }
 }
 
 void EventLoop::exit(int a_exitCode) {
-  enqueueEvent([a_exitCode, this]() { 
+  enqueueEvent([a_exitCode, this]() {
     m_exitCode = a_exitCode;
     m_exit = true;
   });
